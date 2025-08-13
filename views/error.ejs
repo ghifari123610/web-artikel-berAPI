@@ -1,0 +1,19 @@
+<% layout('layout') -%>
+
+<section class="error-page py-5">
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6 text-center">
+                <div class="error-content">
+                    <i class="fas fa-exclamation-triangle fa-5x text-warning mb-4"></i>
+                    <h1 class="display-4 fw-bold text-danger mb-3">Oops!</h1>
+                    <h2 class="h3 mb-3"><%= title %></h2>
+                    <p class="lead text-muted mb-4"><%= message %></p>
+                    <a href="/" class="btn btn-danger btn-lg">
+                        <i class="fas fa-home"></i> Kembali ke Beranda
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

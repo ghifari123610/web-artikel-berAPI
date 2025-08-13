@@ -1,0 +1,233 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <meta name="description" content="<%= description || 'Berita terkini dari Pondok Informatika' %>">
+    
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark bg-danger">
+            <div class="container">
+                <a class="navbar-brand fw-bold" href="/">
+                    <i class="fas fa-newspaper"></i> PONDOK INFORMATIKA
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarNav">
+                    <ul class="navbar-nav ms-auto">
+                        <li class="nav-item">
+                            <a class="nav-link active" href="/">Beranda</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/">Teknologi</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/">Pendidikan</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/">Islam</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+        
+        <!-- Breaking News Ticker -->
+        <div class="breaking-news bg-dark text-white py-2">
+            <div class="container">
+                <div class="d-flex align-items-center">
+                    <span class="badge bg-danger me-3">BREAKING NEWS</span>
+                    <marquee behavior="scroll" direction="left">
+                        <span class="me-4">Selamat datang di Pondok Informatika News - Portal berita islami dan teknologi</span>
+                    </marquee>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+        <!-- Hero Section -->
+        <section class="hero-section py-4">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-8">
+                        <% if (articles && articles.length > 0) { %>
+                        <div class="hero-main">
+                            <a href="/article/<%= articles[0].id %>" class="text-decoration-none">
+                                <div class="card hero-card border-0">
+<img src="<%= articles[0].image_url || 'https://via.placeholder.com/800x400/DC3545/FFFFFF?text=Pondok+Informatika' %>" 
+                                         class="card-img-top" alt="<%= articles[0].title %>">
+                                    <div class="card-body p-0 mt-3">
+                                        <span class="badge bg-danger mb-2">HEADLINE</span>
+                                        <h1 class="card-title h2 fw-bold text-dark">
+                                            <%= articles[0].title %>
+                                        </h1>
+                                        <p class="card-text text-muted">
+                                            <%= articles[0].description ? articles[0].description.substring(0, 150) + '...' : 'Baca selengkapnya...' %>
+                                        </p>
+                                        <small class="text-muted">
+                                            <i class="far fa-clock"></i> <%= articles[0].date || 'Hari ini' %>
+                                        </small>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                        <% } %>
+                    </div>
+                    <div class="col-lg-4">
+                        <div class="sidebar-news">
+                            <h5 class="border-bottom border-danger pb-2 mb-3">Berita Terbaru</h5>
+                            <% if (articles && articles.length > 1) { %>
+                                <% articles.slice(1, 5).forEach(article => { %>
+                                <div class="mini-news mb-3">
+                                    <a href="/article/<%= article.id %>" class="text-decoration-none">
+                                        <div class="row g-2">
+                                            <div class="col-4">
+<img src="<%= article.image_url || 'https://via.placeholder.com/150x100/6C757D/FFFFFF?text=News' %>" 
+                                             class="img-fluid rounded" alt="<%= article.title %>">
+                                            </div>
+                                            <div class="col-8">
+                                                <h6 class="mb-1 text-dark fw-bold"><%= article.title %></h6>
+                                                <small class="text-muted"><%= article.date || 'Hari ini' %></small>
+                                            </div>
+                                        </div>
+                                    </a>
+                                </div>
+                                <% }); %>
+                            <% } %>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Main Content -->
+        <section class="main-content py-4">
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-8">
+                        <h4 class="section-title border-bottom border-danger pb-2 mb-4">
+                            <i class="fas fa-fire text-danger"></i> Berita Populer
+                        </h4>
+                        
+                        <div class="row">
+                            <% if (articles && articles.length > 0) { %>
+                                <% articles.forEach(article => { %>
+                                <div class="col-md-6 mb-4">
+                                    <div class="card news-card h-100 border-0 shadow-sm">
+                                        <a href="/article/<%= article.id %>" class="text-decoration-none">
+<img src="<%= article.image_url || 'https://via.placeholder.com/400x250/DC3545/FFFFFF?text=News' %>" 
+                                         class="card-img-top" alt="<%= article.title %>">
+                                            <div class="card-body">
+                                                <span class="badge bg-primary mb-2"><%= article.category || 'Umum' %></span>
+                                                <h5 class="card-title text-dark fw-bold"><%= article.title %></h5>
+                                                <p class="card-text text-muted">
+                                                    <%= article.description ? article.description.substring(0, 100) + '...' : 'Baca selengkapnya...' %>
+                                                </p>
+                                                <div class="d-flex justify-content-between align-items-center">
+                                                    <small class="text-muted">
+                                                        <i class="far fa-clock"></i> <%= article.date || 'Hari ini' %>
+                                                    </small>
+                                                    <small class="text-muted">
+                                                        <i class="far fa-eye"></i> <%= Math.floor(Math.random() * 1000) + 100 %> views
+                                                    </small>
+                                                </div>
+                                            </div>
+                                        </a>
+                                    </div>
+                                </div>
+                                <% }); %>
+                            <% } else { %>
+                                <div class="col-12">
+                                    <div class="text-center py-5">
+                                        <i class="fas fa-newspaper fa-3x text-muted mb-3"></i>
+                                        <h5>Tidak ada artikel tersedia</h5>
+                                        <p class="text-muted">Silakan coba lagi nanti</p>
+                                    </div>
+                                </div>
+                            <% } %>
+                        </div>
+                    </div>
+                    
+                    <div class="col-lg-4">
+                        <!-- Sidebar -->
+                        <div class="sidebar">
+                            <!-- Popular Tags -->
+                            <div class="widget mb-4">
+                                <h5 class="widget-title border-bottom border-danger pb-2 mb-3">
+                                    <i class="fas fa-tags"></i> Tag Populer
+                                </h5>
+                                <div class="tags">
+                                    <a href="#" class="badge bg-secondary text-decoration-none me-1 mb-1">Teknologi</a>
+                                    <a href="#" class="badge bg-secondary text-decoration-none me-1 mb-1">Islam</a>
+                                    <a href="#" class="badge bg-secondary text-decoration-none me-1 mb-1">Pendidikan</a>
+                                    <a href="#" class="badge bg-secondary text-decoration-none me-1 mb-1">Digital</a>
+                                    <a href="#" class="badge bg-secondary text-decoration-none me-1 mb-1">Al-Quran</a>
+                                    <a href="#" class="badge bg-secondary text-decoration-none me-1 mb-1">Sunnah</a>
+                                </div>
+                            </div>
+                            
+                            <!-- Newsletter -->
+                            <div class="widget mb-4">
+                                <h5 class="widget-title border-bottom border-danger pb-2 mb-3">
+                                    <i class="fas fa-envelope"></i> Newsletter
+                                </h5>
+                                <p>Dapatkan update berita terbaru langsung ke email Anda</p>
+                                <form class="newsletter-form">
+                                    <div class="mb-3">
+                                        <input type="email" class="form-control" placeholder="Email Anda" required>
+                                    </div>
+                                    <button type="submit" class="btn btn-danger w-100">Berlangganan</button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Load More Button -->
+        <div class="container text-center mb-5">
+            <button id="loadMoreBtn" class="btn btn-danger">Tampilkan Artikel Lama</button>
+        </div>
+    </main>
+
+    <footer class="bg-dark text-white py-4 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Pondok Informatika</h5>
+                    <p>Portal berita islami dan teknologi untuk generasi millenial</p>
+                </div>
+                <div class="col-md-6">
+                    <h5>Kontak</h5>
+                    <p>Email: info@pondokinformatika.id</p>
+                    <p>Telepon: (021) 12345678</p>
+                </div>
+            </div>
+            <hr>
+            <div class="text-center">
+                <p>&copy; 2024 Pondok Informatika. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <!-- Custom JS -->
+    <script src="/js/main.js"></script>
+</body>
+</html>

@@ -1,6 +1,7 @@
-  const express = require('express');
+const express = require('express');
 const axios = require('axios');
 const path = require('path');
+const expressLayouts = require('express-ejs-layouts');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -8,6 +9,10 @@ const PORT = process.env.PORT || 3000;
 // Set EJS sebagai template engine
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
+
+// Configure express-ejs-layouts
+app.use(expressLayouts);
+app.set('layout', 'layout');
 
 // Static files
 app.use(express.static(path.join(__dirname, 'public')));
@@ -24,7 +29,7 @@ app.get('/', async (req, res) => {
         const response = await axios.get(API_BASE_URL);
         let articles = response.data.data || [];
 
-        // Sort articles by id descending (assuming id 1 is oldest)
+        // Include category in articles
         articles.sort((a, b) => parseInt(b.id) - parseInt(a.id));
 
         // Paginate articles for initial page load
@@ -36,14 +41,18 @@ app.get('/', async (req, res) => {
         
         res.render('index', { 
             title: 'Pondok Informatika News',
-            articles: paginatedArticles,
+                articles: paginatedArticles.map(article => ({
+                    ...article,
+                    category: article.kategori // Directly use the category from the API
+                })),
             description: 'Berita terkini dari Pondok Informatika'
         });
     } catch (error) {
         console.error('Error fetching articles:', error);
         res.render('error', { 
             title: 'Error',
-            message: 'Gagal memuat artikel'
+            message: 'Gagal memuat artikel',
+            description: 'Terjadi kesalahan saat memuat artikel'
         });
     }
 });
@@ -81,19 +90,82 @@ app.get('/article/:id', async (req, res) => {
         if (!article) {
             return res.status(404).render('error', {
                 title: 'Artikel Tidak Ditemukan',
-                message: 'Artikel yang Anda cari tidak ditemukan'
+                message: 'Artikel yang Anda cari tidak ditemukan',
+                description: 'Artikel yang Anda cari tidak dapat ditemukan di database kami'
             });
         }
+
+        // Clean HTML tags from content
+        let cleanContent = article.content || article.description || 'Konten artikel tidak tersedia.';
+        cleanContent = cleanContent
+            .replace(/<\/?[^>]+(>|$)/g, "")
+            .replace(/&nbsp;/g, ' ')
+            .replace(/&amp;/g, '&')
+            .replace(/</g, '<')
+            .replace(/>/g, '>')
+            .replace(/"/g, '"')
+            .replace(/&#39;/g, "'")
+            .replace(/&ldquo;/g, '"')
+            .replace(/&rdquo;/g, '"')
+            .replace(/&lsquo;/g, "'")
+            .replace(/&rsquo;/g, "'")
+            .replace(/&mdash;/g, '-')
+            .replace(/&ndash;/g, '-')
+            .replace(/\s+/g, ' ')
+            .trim();
+
+        // Create new article object with cleaned content
+        const cleanArticle = {
+            category: article.kategori, // Set the category from the API
+            ...article,
+            content: cleanContent,
+            description: cleanContent.substring(0, 200) + '...'
+        };
         
-        res.render('article', { 
+        // Shuffle articles for random display
+        const shuffledArticles = [...articles]
+            .filter(a => a.id != req.params.id) // Exclude current article
+            .sort(() => Math.random() - 0.5); // Random shuffle
+        
+        res.render('article', {
+            articles: shuffledArticles,
             title: article.title,
-            article: article
+            article: cleanArticle,
+            description: cleanArticle.description || article.title
         });
     } catch (error) {
         console.error('Error fetching article:', error);
         res.render('error', { 
             title: 'Error',
-            message: 'Gagal memuat artikel'
+            message: 'Gagal memuat artikel',
+            description: 'Terjadi kesalahan saat memuat artikel'
+        });
+    }
+});
+
+// Old articles page
+app.get('/old-articles', async (req, res) => {
+    try {
+        const response = await axios.get(API_BASE_URL);
+        let articles = response.data.data || [];
+
+        // Sort articles by id ascending (oldest first)
+        articles.sort((a, b) => parseInt(a.id) - parseInt(b.id));
+
+        // Get older articles (skip first 10)
+        const oldArticles = articles.slice(10);
+
+        res.render('old-articles', { 
+            title: 'Artikel Lama - Pondok Informatika',
+            articles: oldArticles,
+            description: 'Koleksi artikel-artikel sebelumnya dari Pondok Informatika'
+        });
+    } catch (error) {
+        console.error('Error fetching old articles:', error);
+        res.render('error', { 
+            title: 'Error',
+            message: 'Gagal memuat artikel lama',
+            description: 'Terjadi kesalahan saat memuat artikel lama'
         });
     }
 });
@@ -102,7 +174,8 @@ app.get('/article/:id', async (req, res) => {
 app.use((req, res) => {
     res.status(404).render('error', {
         title: '404 - Halaman Tidak Ditemukan',
-        message: 'Halaman yang Anda cari tidak ditemukan'
+        message: 'Halaman yang Anda cari tidak ditemukan',
+        description: 'Halaman yang Anda cari tidak tersedia di website ini'
     });
 });
 

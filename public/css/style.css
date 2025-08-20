@@ -1,10 +1,14 @@
 /* Custom Styles for Pondok Informatika News */
 
 :root {
-    --primary-color: #DC3545;
-    --secondary-color: #6C757D;
+    --primary-color: #0056b3;
+    --secondary-color: #007bff;
+    --accent-color: #e3f2fd;
     --text-color: #212529;
-    --light-bg: #f8f9fa;
+    --light-bg: #ffffff;
+    --dark-blue: #003d82;
+    --light-blue: #f0f8ff;
+    --border-color: #dee2e6;
 }
 
 body {
@@ -39,8 +43,10 @@ body {
 }
 
 .hero-card img {
-    height: 400px;
-    object-fit: cover;
+    width: 100%;
+    height: auto;
+    max-height: 500px;
+    object-fit: contain;
     border-radius: 10px;
 }
 
@@ -57,8 +63,11 @@ body {
 }
 
 .news-card img {
-    height: 200px;
-    object-fit: cover;
+    width: 100%;
+    height: auto;
+    max-height: 300px;
+    object-fit: contain;
+    background-color: #f8f9fa;
 }
 
 .news-card .card-body {
@@ -77,8 +86,11 @@ body {
 }
 
 .mini-news img {
-    height: 60px;
-    object-fit: cover;
+    width: 100%;
+    height: auto;
+    max-height: 100px;
+    object-fit: contain;
+    background-color: #f8f9fa;
 }
 
 .mini-news h6 {
@@ -112,6 +124,61 @@ body {
 
 .article-content p {
     margin-bottom: 1.5rem;
+}
+
+/* Enhanced Article Detail for larger image layout */
+.article-detail article img {
+    border-radius: 12px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    transition: transform 0.3s ease;
+}
+
+.article-detail article img:hover {
+    transform: scale(1.02);
+}
+
+.article-detail h1 {
+    color: var(--text-color);
+    margin-top: 1rem;
+}
+
+/* Related Articles Sidebar Styling */
+.related-articles ul li a {
+    transition: all 0.3s ease;
+    padding: 0.5rem;
+    border-radius: 8px;
+}
+
+.related-articles ul li a:hover {
+    background-color: var(--light-blue);
+    transform: translateX(5px);
+}
+
+.related-articles ul li img {
+    transition: transform 0.3s ease;
+    width: 140px;
+    height: 105px;
+}
+
+.related-articles ul li a:hover img {
+    transform: scale(1.05);
+}
+
+@media (max-width: 768px) {
+    .related-articles ul li img {
+        width: 80px;
+        height: 60px;
+    }
+}
+
+@media (max-width: 768px) {
+    .article-detail article img {
+        height: 250px !important;
+    }
+    
+    .article-detail h1 {
+        font-size: 1.8rem;
+    }
 }
 
 /* Sidebar */

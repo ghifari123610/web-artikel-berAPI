@@ -1,108 +1,59 @@
-<!DOCTYPE html>
-<html lang="id">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><%= article.title %></title>
-    <meta name="description" content="<%= article.description || article.title %>">
-    
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="/css/style.css">
-</head>
-<body>
-    <header>
-        <nav class="navbar navbar-expand-lg navbar-dark bg-danger">
-            <div class="container">
-                <a class="navbar-brand fw-bold" href="/">
-                    <i class="fas fa-newspaper"></i> PONDOK INFORMATIKA
-                </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav ms-auto">
-                        <li class="nav-item">
-                            <a class="nav-link" href="/">Beranda</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/">Teknologi</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/">Pendidikan</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/">Islam</a>
+<section class="article-detail py-4">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8">
+                <article>
+                    <!-- Gambar besar di atas -->
+                    <div class="mb-4">
+                        <% if (article.image_url) { %>
+                        <img src="<%= article.image_url %>" alt="<%= article.title %>" class="img-fluid rounded w-100" style="height: 400px; object-fit: cover;">
+                        <% } %>
+                    </div>
+                    
+                    <!-- Judul artikel di bawah gambar -->
+                    <h1 class="fw-bold mb-3" style="font-size: 2.5rem; line-height: 1.2;"><%= article.title %></h1>
+                    
+                    <!-- Metadata -->
+                    <div class="d-flex align-items-center mb-4 flex-wrap">
+                        <span class="badge bg-primary me-3 mb-2"><%= article.category || 'Umum' %></span>
+                        <p class="text-muted mb-0 me-4">
+                            <i class="far fa-clock"></i> <%= article.created_at || article.date || 'Hari ini' %>
+                        </p>
+                        <p class="text-muted mb-0">
+                            <i class="fas fa-user"></i> Di tulis oleh: <%= article.nama_lengkap_santri || article.author || 'Admin' %>
+                        </p>
+                    </div>
+                    
+                    <!-- Konten artikel -->
+                    <div class="article-content">
+                        <%= article.content || article.description || 'Konten artikel tidak tersedia.' %>
+                    </div>
+                </article>
+            </div>
+            <div class="col-lg-4">
+                <aside class="related-articles">
+                    <h5 class="border-bottom border-danger pb-2 mb-3">Artikel Lainnya</h5>
+                    <ul class="list-unstyled">
+                        <li class="mb-3">
+                            <a href="/" class="text-decoration-none">Kembali ke Beranda</a>
                         </li>
                     </ul>
-                </div>
-            </div>
-        </nav>
-    </header>
-
-    <main>
-        <section class="article-detail py-4">
-            <div class="container">
-                <div class="row">
-                    <div class="col-lg-8">
-                        <% if (article.image_url) { %>
-                        <img src="<%= article.image_url %>" alt="<%= article.title %>" class="img-fluid mb-4 rounded">
-                        <% } %>
-                        <article>
-                            <h1 class="fw-bold mb-3"><%= article.title %></h1>
-                            <p class="text-muted mb-4">
-                                <i class="far fa-clock"></i> <%= article.date || 'Hari ini' %> | 
-                                <i class="fas fa-user"></i> <%= article.author || 'Admin' %>
-                            </p>
-                            <div class="article-content">
-                                <%= article.content || article.description || 'Konten artikel tidak tersedia.' %>
-                            </div>
-                        </article>
-                    </div>
-                    <div class="col-lg-4">
-                        <aside>
-                            <h5 class="border-bottom border-danger pb-2 mb-3">Artikel Lainnya</h5>
-                            <ul class="list-unstyled">
-                                <li class="mb-2">
-                                    <a href="/" class="text-decoration-none">Kembali ke Beranda</a>
+                    <ul class="list-unstyled">
+                        <% if (articles && articles.length > 0) { %>
+                            <% articles.slice(0, 4).forEach(relArticle => { %>
+                                <li class="mb-3">
+                                    <a href="/article/<%= relArticle.id %>" class="text-decoration-none d-flex align-items-start">
+                                        <img src="<%= relArticle.image_url || 'https://via.placeholder.com/80x60' %>" class="img-fluid rounded me-3 flex-shrink-0" alt="<%= relArticle.title %>" style="width: 80px; height: 60px; object-fit: cover;">
+                                        <div>
+                                            <h6 class="mb-1 text-dark fw-bold" style="font-size: 0.9rem; line-height: 1.3;"><%= relArticle.title %></h6>
+                                        </div>
+                                    </a>
                                 </li>
-                            </ul>
-                        </aside>
-                    </div>
-                </div>
-            </div>
-        </section>
-    </main>
-
-    <footer class="bg-dark text-white py-4 mt-5">
-        <div class="container">
-            <div class="row">
-                <div class="col-md-6">
-                    <h5>Pondok Informatika</h5>
-                    <p>Portal berita islami dan teknologi untuk generasi millenial</p>
-                </div>
-                <div class="col-md-6">
-                    <h5>Kontak</h5>
-                    <p>Email: info@pondokinformatika.id</p>
-                    <p>Telepon: (021) 12345678</p>
-                </div>
-            </div>
-            <hr>
-            <div class="text-center">
-                <p>&copy; 2024 Pondok Informatika. All rights reserved.</p>
+                            <% }); %>
+                        <% } %>
+                    </ul>
+                </aside>
             </div>
         </div>
-    </footer>
-
-    <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    
-    <!-- Custom JS -->
-    <script src="/js/main.js"></script>
-</body>
-</html>
+    </div>
+</section>

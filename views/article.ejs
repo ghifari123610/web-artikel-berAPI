@@ -40,7 +40,7 @@
                     </ul>
                     <ul class="list-unstyled">
                         <% if (articles && articles.length > 0) { %>
-                            <% articles.slice(0, 4).forEach(relArticle => { %>
+                            <% articles.slice(0, 8).forEach(relArticle => { %>
                                 <li class="mb-3">
                                     <a href="/article/<%= relArticle.id %>" class="text-decoration-none d-flex align-items-start">
                                         <img src="<%= relArticle.image_url || 'https://via.placeholder.com/80x60' %>" class="img-fluid rounded me-3 flex-shrink-0" alt="<%= relArticle.title %>" style="width: 80px; height: 60px; object-fit: cover;">

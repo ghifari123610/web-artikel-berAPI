@@ -219,6 +219,57 @@ body {
     }
 }
 
+/* Load More Button Styles */
+#load-more-container {
+    margin: 3rem 0;
+}
+
+#load-more-btn {
+    min-width: 200px;
+    transition: all 0.3s ease;
+}
+
+#load-more-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+#load-more-btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+#loading-spinner {
+    width: 3rem;
+    height: 3rem;
+}
+
+.article-item {
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Empty state styling */
+.empty-state {
+    text-align: center;
+    padding: 3rem;
+    color: #6c757d;
+}
+
+.empty-state i {
+    margin-bottom: 1rem;
+}
+
 /* Loading Animation */
 .loading {
     display: inline-block;

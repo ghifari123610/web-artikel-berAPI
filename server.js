@@ -149,16 +149,27 @@ app.get('/old-articles', async (req, res) => {
         const response = await axios.get(API_BASE_URL);
         let articles = response.data.data || [];
 
-        // Sort articles by id ascending (oldest first)
-        articles.sort((a, b) => parseInt(a.id) - parseInt(b.id));
+        // Sort articles by date (oldest first based on actual date) - artikel lama di bawah
+        articles.sort((a, b) => {
+            const dateA = new Date(a.created_at || a.date || '2000-01-01');
+            const dateB = new Date(b.created_at || b.date || '2000-01-01');
+            return dateA - dateB; // Urutan ascending: lama di bawah, baru di atas
+        });
 
-        // Get older articles (skip first 10)
-        const oldArticles = articles.slice(10);
+        // Filter articles that are older than 2 days
+        const twoDaysAgo = new Date();
+        twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
+        
+        const oldArticles = articles.filter(article => {
+            const articleDate = new Date(article.created_at || article.date || '2000-01-01');
+            return articleDate < twoDaysAgo;
+        });
 
         res.render('old-articles', { 
             title: 'Artikel Lama - Pondok Informatika',
-            articles: oldArticles,
-            description: 'Koleksi artikel-artikel sebelumnya dari Pondok Informatika'
+            articles: oldArticles.slice(0, 6), // Show first 6 oldest articles initially
+            description: 'Koleksi artikel-artikel sebelumnya dari Pondok Informatika',
+            totalArticles: oldArticles.length
         });
     } catch (error) {
         console.error('Error fetching old articles:', error);
@@ -167,6 +178,47 @@ app.get('/old-articles', async (req, res) => {
             message: 'Gagal memuat artikel lama',
             description: 'Terjadi kesalahan saat memuat artikel lama'
         });
+    }
+});
+
+// API endpoint for loading more old articles
+app.get('/api/old-articles', async (req, res) => {
+    try {
+        const response = await axios.get(API_BASE_URL);
+        let articles = response.data.data || [];
+
+        // Sort articles by date (oldest first based on actual date)
+        articles.sort((a, b) => {
+            const dateA = new Date(a.created_at || a.date || '2000-01-01');
+            const dateB = new Date(b.created_at || b.date || '2000-01-01');
+            return dateA - dateB;
+        });
+
+        // Filter articles that are older than 2 days
+        const twoDaysAgo = new Date();
+        twoDaysAgo.setDate(twoDaysAgo.getDate() - 2);
+        
+        const oldArticles = articles.filter(article => {
+            const articleDate = new Date(article.created_at || article.date || '2000-01-01');
+            return articleDate < twoDaysAgo;
+        });
+
+        // Pagination parameters
+        const page = parseInt(req.query.page) || 1;
+        const limit = parseInt(req.query.limit) || 6;
+        const startIndex = (page - 1) * limit;
+        const endIndex = page * limit;
+
+        const paginatedArticles = oldArticles.slice(startIndex, endIndex);
+
+        res.json({ 
+            articles: paginatedArticles,
+            hasMore: endIndex < oldArticles.length,
+            total: oldArticles.length
+        });
+    } catch (error) {
+        console.error('Error fetching old articles:', error);
+        res.status(500).json({ error: 'Gagal memuat artikel lama' });
     }
 });
 
@@ -183,3 +235,4 @@ app.use((req, res) => {
 app.listen(PORT, () => {
     console.log(`Server berjalan di http://localhost:${PORT}`);
 });
+    
